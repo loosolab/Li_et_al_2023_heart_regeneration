@@ -1,6 +1,7 @@
 # Li_et_al_2023_heart_regeneration
 
-*TODO:* replace zenodo link below
+ !! **TODO** !! replace zenodo link below
+
 [![DOI](https://zenodo.org/badge/552852940.svg)](https://zenodo.org/badge/latestdoi/552852940)
 
 ABSTRACT:
