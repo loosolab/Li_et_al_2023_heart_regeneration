@@ -6,10 +6,8 @@
 prefix	fastq
 ctrl_1	ctrl_1_R1.fastq
 ctrl_2	ctrl_2_R1.fastq
-ctrl_3	ctrl_3_R1.fastq
 ko_1	ko_1_R1.fastq
 ko_2	ko_2_R1.fastq
-ko_3	ko_3_R1.fastq
 
 ##
 ## Repeat the following steps per sample
