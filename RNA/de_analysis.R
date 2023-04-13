@@ -8,7 +8,7 @@ rnaseqMatrix = round(rnaseqMatrix)
 rnaseqMatrix = rnaseqMatrix[rowSums(rnaseqMatrix)>=5,]
 cat("\nmatrix:\n")
 colnames(rnaseqMatrix)
-conditions = data.frame(conditions=factor(c("ctrl","ctrl","ko-tet3","ko-tet3")))
+conditions = data.frame(conditions=factor(c("ctrl","ctrl","ko","ko")))
 rownames(conditions) = colnames(rnaseqMatrix)
 cat("\ndesign:\n")
 conditions
@@ -18,7 +18,7 @@ dds = DESeq(ddsFullCountTable)
 res = results(dds) 
 
 baseMeanA <- rowMeans(counts(dds, normalized=TRUE)[,colData(dds)$conditions == "ctrl"])
-baseMeanB <- rowMeans(counts(dds, normalized=TRUE)[,colData(dds)$conditions == "ko-tet3"])
+baseMeanB <- rowMeans(counts(dds, normalized=TRUE)[,colData(dds)$conditions == "ko"])
 
 res = cbind(baseMeanA, baseMeanB, as.data.frame(res))
 		
