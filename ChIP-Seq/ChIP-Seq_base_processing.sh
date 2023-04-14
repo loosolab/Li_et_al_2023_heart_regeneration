@@ -46,3 +46,18 @@ MUSIC -get_multiscale_punctate_ERs -chip ./music/${sample_prefix}/chip/dedup -co
 ## Create union peaks
 cat ./music/*/*.bed | bedtools merge -header -d 50 >matrix/union.bed
 
+## Recount union peaks for all samples: Run per sample
+bigWigAverageOverBed ./star/${sample_prefix}.bw ./matrix/union.bed ./matrix/bed_recount/${sample_prefix}.union.counts.txt
+cut -f7 ./matrix/bed_recount/${sample_prefix}.union.counts.txt >./matrix/bed_recount/merge/${sample_prefix}
+
+## Merge union peak counts per sample to count matrix
+paste ./matrix/bed_recount/merge/* >counts.matrix
+
+## RNA differential analysis: R with DESeq2 1.26.0 package
+## de_analysis.R script has to be adapted to include samples/conditions of the respective dataset
+R --vanilla -q < de_analysis.R
+
+## Normalize matrix for downstream plots: R with DESeq2 1.26.0 package, =counts.matrix.norm
+deseq_norm.R -m counts.matrix
+
+
