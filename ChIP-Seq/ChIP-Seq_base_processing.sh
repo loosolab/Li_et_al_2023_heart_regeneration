@@ -18,14 +18,26 @@ java -jar trimmomatic-0.39.jar SE -threads 8 ./raw/${sample_prefix}_input_R1.fas
 STAR --genomeDir /mnt/flatfiles/organisms/new_organism/mus_musculus/101/index_star --runThreadN 16 --readFilesIn ./trim/${sample_prefix}_R1_trim.fastq --outReadsUnmapped Fastx --outFileNamePrefix ./star/${sample_prefix} --outSAMstrandField intronMotif --outSAMtype BAM Unsorted --genomeLoad LoadAndKeep --outFilterMismatchNoverLmax 0.1 --outFilterScoreMinOverLread 0.66 --outFilterMatchNminOverLread 0.66 --outFilterMatchNmin 20 --alignEndsProtrude 10 ConcordantPair --alignMatesGapMax 2000 --limitOutSAMoneReadBytes 10000000 --outMultimapperOrder Random --sjdbOverhang 100 --alignEndsType EndToEnd --alignIntronMax 1 --alignSJDBoverhangMin 999 --outFilterMultimapNmax 1
 STAR --genomeDir /mnt/flatfiles/organisms/new_organism/mus_musculus/101/index_star --runThreadN 16 --readFilesIn ./trim/${sample_prefix}_input_R1_trim.fastq --outReadsUnmapped Fastx --outFileNamePrefix ./star/${sample_prefix}_input --outSAMstrandField intronMotif --outSAMtype BAM Unsorted --genomeLoad LoadAndKeep --outFilterMismatchNoverLmax 0.1 --outFilterScoreMinOverLread 0.66 --outFilterMatchNminOverLread 0.66 --outFilterMatchNmin 20 --alignEndsProtrude 10 ConcordantPair --alignMatesGapMax 2000 --limitOutSAMoneReadBytes 10000000 --outMultimapperOrder Random --sjdbOverhang 100 --alignEndsType EndToEnd --alignIntronMax 1 --alignSJDBoverhangMin 999 --outFilterMultimapNmax 1
 
+## Deduplication chip/input: PICARD
+java -Xmx4g -jar picard.jar MarkDuplicates I=./star/${sample_prefix}.bam O=./star/${sample_prefix}_nodup.bam REMOVE_DUPLICATES=true VALIDATION_STRINGENCY=LENIENT
+java -Xmx4g -jar picard.jar MarkDuplicates I=./star/${sample_prefix}_input.bam O=./star/${sample_prefix}_input_nodup.bam REMOVE_DUPLICATES=true VALIDATION_STRINGENCY=LENIENT
+
 ## Generate BigWig normalized to mapped reads per sample chip/input: python package deeptools 3.5.1 / bamCoverage
-bamCoverage -b ./star/${sample_prefix}.bam -o ./star/${sample_prefix}.bw -p 16 --binSize 25 --smoothLength 75 --normalizeUsing RPKM --outFileFormat bigwig
-bamCoverage -b ./star/${sample_prefix}_input.bam -o ./star/${sample_prefix}_input.bw -p 16 --binSize 25 --smoothLength 75 --normalizeUsing RPKM --outFileFormat bigwig
+bamCoverage -b ./star/${sample_prefix}_nodup.bam -o ./star/${sample_prefix}.bw -p 16 --binSize 25 --smoothLength 75 --normalizeUsing RPKM --outFileFormat bigwig
+bamCoverage -b ./star/${sample_prefix}_input_nodup.bam -o ./star/${sample_prefix}_input.bw -p 16 --binSize 25 --smoothLength 75 --normalizeUsing RPKM --outFileFormat bigwig
+
+## Call peaks: Music
+samtools view ./star/${sample_prefix}_nodup.bam | MUSIC -preprocess SAM stdin ./music/${sample_prefix}/chip/
+samtools view ./star/${sample_prefix}_input_nodup.bam | MUSIC -preprocess SAM stdin ./music/${sample_prefix}/input/
+MUSIC -sort_reads ./music/${sample_prefix}/chip/ ./music/${sample_prefix}/chip/sorted
+MUSIC -sort_reads ./music/${sample_prefix}/input/ ./music/${sample_prefix}/input/sorted
+MUSIC -remove_duplicates ./music/${sample_prefix}/chip/sorted 2 ./music/${sample_prefix}/chip/dedup
+MUSIC -remove_duplicates ./music/${sample_prefix}/input/sorted 2 ./music/${sample_prefix}/input/dedup
+MUSIC -get_multiscale_punctate_ERs -chip ./music/${sample_prefix}/chip/dedup -control ./music/${sample_prefix}/input/dedup -l_p 1500 -mapp /mnt/flatfiles/organisms/mouse/mm10_GRCm38/music_mappability/100bp -l_mapp 100 -q_val 0.2 -sigma 0
 
 
 
 TODO:
-all steps: with input
 peak calling
 recount
 ...
