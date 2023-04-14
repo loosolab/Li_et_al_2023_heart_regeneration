@@ -10,6 +10,10 @@ ChIP-KO_1	ChIP-KO_1_R1.fastq	ChIP-KO_1_input_R1.fastq
 ChIP-KO_2	ChIP-KO_2_R1.fastq	ChIP-KO_2_input_R1.fastq
 ChIP-KO_3	ChIP-KO_3_R1.fastq	ChIP-KO_3_input_R1.fastq
 
+##
+## Repeat the following steps per sample
+##
+
 ## Trimming chip/input: Trimmomatic
 java -jar trimmomatic-0.39.jar SE -threads 8 ./raw/${sample_prefix}_R1.fastq ./trim/${sample_prefix}_R1_trim.fastq HEADCROP:0 LEADING:0 TRAILING:0 SLIDINGWINDOW:5:15 CROP:500 AVGQUAL:0 MINLEN:15
 java -jar trimmomatic-0.39.jar SE -threads 8 ./raw/${sample_prefix}_input_R1.fastq ./trim/${sample_prefix}_input_R1_trim.fastq HEADCROP:0 LEADING:0 TRAILING:0 SLIDINGWINDOW:5:15 CROP:500 AVGQUAL:0 MINLEN:15
@@ -35,12 +39,10 @@ MUSIC -remove_duplicates ./music/${sample_prefix}/chip/sorted 2 ./music/${sample
 MUSIC -remove_duplicates ./music/${sample_prefix}/input/sorted 2 ./music/${sample_prefix}/input/dedup
 MUSIC -get_multiscale_punctate_ERs -chip ./music/${sample_prefix}/chip/dedup -control ./music/${sample_prefix}/input/dedup -l_p 1500 -mapp /mnt/flatfiles/organisms/mouse/mm10_GRCm38/music_mappability/100bp -l_mapp 100 -q_val 0.2 -sigma 0
 
+##
+## Combine per-sample results
+##
 
-
-TODO:
-peak calling
-recount
-...
-
-
+## Create union peaks
+cat ./music/*/*.bed | bedtools merge -header -d 50 >matrix/union.bed
 
