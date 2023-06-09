@@ -1,0 +1,18 @@
+# Li_et_al_2023_heart_regeneration Dependencies
+
+[![DOI](https://zenodo.org/badge/627319900.svg)](https://zenodo.org/badge/latestdoi/627319900)
+
+
+Please find depencies here:
+ - DESeq2 https://bioconductor.org/packages/release/bioc/html/DESeq2.html
+ - Trimmomatic http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/TrimmomaticManual_V0.32.pdf
+ - STAR https://github.com/alexdobin/STAR
+ - Picard https://github.com/broadinstitute/picard
+ - Deeptools https://github.com/deeptools/deepTools
+ - Samtools https://github.com/samtools/samtools
+ - MUSIC https://github.com/gersteinlab/MUSIC
+ - Encode tools https://www.encodeproject.org/software/bigwigaverageoverbed/
+ - OS Debian 10 buster https://www.debian.org/releases/buster/ and https://www.debian.org/releases/buster/installmanual
+ 
+ 
+ Install Debian OS as given by Debian manual, within shell, install all dependencies listed above according to respective installation guide
