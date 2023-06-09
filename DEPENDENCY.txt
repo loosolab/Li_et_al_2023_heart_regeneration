@@ -15,4 +15,6 @@ Please find depencies here:
  - OS Debian 10 buster https://www.debian.org/releases/buster/ and https://www.debian.org/releases/buster/installmanual
  
  
- Install Debian OS as given by Debian manual, within shell, install all dependencies listed above according to respective installation guide
+ Install Debian OS as given by Debian manual, within shell, install all dependencies listed above according to respective installation guide.
+ 
+ TYPICAL install time is 5 hours, depending on the experience level of the user
